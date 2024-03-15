@@ -112,9 +112,9 @@ public:
  SignalProbe<Connector<2>> inputProbe;
  
  IIRHilbertApproximator<Connector<2>> hil;
- FIRHilbertTransform<Connector<2>, 255> f63;
- FIRHilbertTransform<Connector<2>, 1023> f127;
- FIRHilbertTransform<Connector<2>, 2047> f255;
+ ConvolutionHilbertFilter<Connector<2>, 255> f255;
+ ConvolutionHilbertFilter<Connector<2>, 1023> f1023;
+ ConvolutionHilbertFilter<Connector<2>, 2047> f2047;
 
  typedef Switch<4, 2> RotatorInputSwitch;
  
@@ -126,21 +126,21 @@ public:
  PhaseRotatorDSP(Parameters &p) :
  inputProbe(p, floatInput),
  hil(p, floatInput),
- f63(p, floatInput),
- f127(p, floatInput),
  f255(p, floatInput),
+ f1023(p, floatInput),
+ f2047(p, floatInput),
  rotator(p,
-         {{&hil.inPhaseOut, &f63.inPhaseOut, &f127.inPhaseOut, &f255.inPhaseOut}},
-         {{&hil.quadratureOut, &f63.quadratureOut, &f127.quadratureOut, &f255.quadratureOut}}, {0.}),
+         {{&hil.inPhaseOut, &f255.inPhaseOut, &f1023.inPhaseOut, &f2047.inPhaseOut}},
+         {{&hil.quadratureOut, &f255.quadratureOut, &f1023.quadratureOut, &f2047.quadratureOut}}, {0.}),
  outputProbe(p, rotator.signalOut)
  {}
  
  void setMode(int mode)
  {
   hil.setEnabled(mode == 0);
-  f63.setEnabled(mode == 1);
-  f127.setEnabled(mode == 2);
-  f255.setEnabled(mode == 3);
+  f255.setEnabled(mode == 1);
+  f1023.setEnabled(mode == 2);
+  f2047.setEnabled(mode == 3);
   rotator.signalXIn.select(mode);
   rotator.signalYIn.select(mode);
  }
@@ -151,9 +151,9 @@ public:
  {
   inputProbe.reset();
   hil.reset();
-  f63.reset();
-  f127.reset();
   f255.reset();
+  f1023.reset();
+  f2047.reset();
   rotator.reset();
   outputProbe.reset();
  }
@@ -168,9 +168,9 @@ public:
  {
   inputProbe.process(startPoint, sampleCount);
   hil.process(startPoint, sampleCount);
-  f63.process(startPoint, sampleCount);
-  f127.process(startPoint, sampleCount);
   f255.process(startPoint, sampleCount);
+  f1023.process(startPoint, sampleCount);
+  f2047.process(startPoint, sampleCount);
   rotator.process(startPoint, sampleCount);
   outputProbe.process(startPoint, sampleCount);
  }

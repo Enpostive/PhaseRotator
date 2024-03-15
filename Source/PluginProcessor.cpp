@@ -54,15 +54,15 @@ parameters(*this, nullptr, juce::Identifier("PhaseRotator"),
      break;
      
     case 1:
-     setLatencySamples(dsp.f63.DelayLength);
+     setLatencySamples(dsp.f255.DelayLength);
      break;
      
     case 2:
-     setLatencySamples(dsp.f127.DelayLength);
+     setLatencySamples(dsp.f1023.DelayLength);
      break;
      
     case 3:
-     setLatencySamples(dsp.f255.DelayLength);
+     setLatencySamples(dsp.f2047.DelayLength);
      break;
    }
   });
